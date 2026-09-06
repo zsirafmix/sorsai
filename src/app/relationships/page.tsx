@@ -52,7 +52,8 @@ export default function RelationshipsPage() {
         body: JSON.stringify({
           userProfile: user,
           partner,
-          language
+          language,
+          provider: typeof window !== 'undefined' ? (localStorage.getItem('sorsai_ai_provider') || undefined) : undefined
         })
       });
       const data = await res.json();

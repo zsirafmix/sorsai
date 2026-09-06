@@ -17,12 +17,14 @@ interface AuthContextProps {
   toggleTier: () => void;
   verifyAdminPasscode: (passcode: string) => boolean;
   revokeAdmin: () => void;
+  setDemoMode: (isDemo: boolean) => void;
+  toggleDemoMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps>({
   user: null,
   isLoading: true,
-  isDemoMode: true,
+  isDemoMode: false, // Default to LIVE mode
   isAdmin: false,
   login: async () => {},
   logout: async () => {},
@@ -30,17 +32,36 @@ const AuthContext = createContext<AuthContextProps>({
   toggleTier: () => {},
   verifyAdminPasscode: () => false,
   revokeAdmin: () => {},
+  setDemoMode: () => {},
+  toggleDemoMode: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false); // Live by default
 
   useEffect(() => {
+    // Check saved mode or env variable
+    let initialDemo = false;
+    try {
+      const saved = localStorage.getItem('sorsai_app_mode');
+      if (saved === 'demo') {
+        initialDemo = true;
+      } else if (saved === 'live') {
+        initialDemo = false;
+      } else {
+        // Default to live unless explicitly configured as demo in env
+        initialDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo';
+        localStorage.setItem('sorsai_app_mode', 'live');
+      }
+    } catch {
+      initialDemo = false;
+    }
+    setIsDemoMode(initialDemo);
+
     const supabase = createClient();
     if (supabase) {
-      setIsDemoMode(false);
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
           const profile = demoStore.getProfile();
@@ -52,11 +73,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
       });
     } else {
-      setIsDemoMode(true);
       setUser(demoStore.getProfile());
       setIsLoading(false);
     }
   }, []);
+
+  const setDemoMode = (demo: boolean) => {
+    setIsDemoMode(demo);
+    try {
+      localStorage.setItem('sorsai_app_mode', demo ? 'demo' : 'live');
+    } catch {}
+    demoStore.addAuditLog(
+      "Rendszermód Váltás",
+      demo ? "Alkalmazás átváltva Demo Módba" : "✨ Alkalmazás átváltva Éles Módba (Live Production)"
+    );
+  };
+
+  const toggleDemoMode = () => {
+    setDemoMode(!isDemoMode);
+  };
 
   const login = async (email: string) => {
     const updated = demoStore.saveProfile({
@@ -121,6 +156,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toggleTier,
         verifyAdminPasscode,
         revokeAdmin,
+        setDemoMode,
+        toggleDemoMode,
       }}
     >
       {children}

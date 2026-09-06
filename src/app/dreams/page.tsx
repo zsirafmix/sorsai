@@ -41,8 +41,11 @@ export default function DreamsPage() {
     try {
       const res = await fetch('/api/ai/dreams', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dreamText, language })
+        body: JSON.stringify({
+          dreamText,
+          language,
+          provider: typeof window !== 'undefined' ? (localStorage.getItem('sorsai_ai_provider') || undefined) : undefined
+        })
       });
       const data = await res.json();
       setAnalysis(data.analysis);

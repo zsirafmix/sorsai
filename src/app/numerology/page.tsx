@@ -51,7 +51,11 @@ export default function NumerologyPage() {
       const res = await fetch('/api/ai/numerology', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile, language })
+        body: JSON.stringify({
+          profile,
+          language,
+          provider: typeof window !== 'undefined' ? (localStorage.getItem('sorsai_ai_provider') || undefined) : undefined
+        })
       });
       const data = await res.json();
       setAiInterpretation(data.interpretation);

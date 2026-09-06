@@ -4,7 +4,9 @@ import { getNumerologyReaderPrompt, PERSONAS } from '@/prompts';
 
 export async function POST(req: NextRequest) {
   try {
-    const { profile, language = 'hu' } = await req.json();
+    const body = await req.json();
+    const { profile, language = 'hu', provider: preferredProvider } = body;
+    const resolvedProvider = preferredProvider || req.headers.get('x-sorsai-provider') || undefined;
 
     const persona = PERSONAS.sophia;
     const systemPrompt = getNumerologyReaderPrompt(persona.systemDirective, language);
@@ -24,7 +26,7 @@ Kérlek, értelmezd ezen rezgések szinergiáját, a mesterszámok feladatait, �
 
     const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
       return provider.generateText(promptPayload, systemPrompt);
-    });
+    }, resolvedProvider);
 
     return NextResponse.json({
       interpretation: result,

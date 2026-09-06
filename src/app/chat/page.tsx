@@ -99,7 +99,8 @@ export default function ChatPage() {
           persona,
           mode,
           userProfile: user,
-          language
+          language,
+          provider: typeof window !== 'undefined' ? (localStorage.getItem('sorsai_ai_provider') || undefined) : undefined
         })
       });
 

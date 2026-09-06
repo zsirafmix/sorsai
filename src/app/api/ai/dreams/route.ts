@@ -4,7 +4,9 @@ import { getDreamInterpreterPrompt, PERSONAS } from '@/prompts';
 
 export async function POST(req: NextRequest) {
   try {
-    const { dreamText, language = 'hu' } = await req.json();
+    const body = await req.json();
+    const { dreamText, language = 'hu', provider: preferredProvider } = body;
+    const resolvedProvider = preferredProvider || req.headers.get('x-sorsai-provider') || undefined;
 
     const persona = PERSONAS.orion; // Orion has philosophical/mystical depth
     const systemPrompt = getDreamInterpreterPrompt(persona.systemDirective, language);
@@ -19,7 +21,7 @@ Kérlek, elemezd az álmot a megadott JSON formátumban (szimbólumok, érzelmi 
 
     const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
       return provider.generateStructured(promptPayload, DreamAnalysisSchema, systemPrompt);
-    });
+    }, resolvedProvider);
 
     return NextResponse.json({
       analysis: result,

@@ -4,7 +4,9 @@ import { getTarotReaderPrompt, PERSONAS } from '@/prompts';
 
 export async function POST(req: NextRequest) {
   try {
-    const { spreadType, question, drawnCards, language = 'hu' } = await req.json();
+    const body = await req.json();
+    const { spreadType, question, drawnCards, language = 'hu', provider: preferredProvider } = body;
+    const resolvedProvider = preferredProvider || req.headers.get('x-sorsai-provider') || undefined;
 
     const persona = PERSONAS.selene; // Selene is Tarot Specialist
     const systemPrompt = getTarotReaderPrompt(persona.systemDirective, language);
@@ -27,7 +29,7 @@ Kérlek, vizsgáld meg a lapok EGYMÁSSAL való kapcsolatát, feszültségeit é
 
     const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
       return provider.generateStructured(promptPayload, TarotAnalysisSchema, systemPrompt);
-    });
+    }, resolvedProvider);
 
     return NextResponse.json({
       analysis: result,

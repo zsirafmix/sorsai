@@ -9,8 +9,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NEXT_PUBLIC_APP_MODE
+        value: live
       - key: AI_PROVIDER_DEFAULT
-        value: mock
+        value: gemini
       # Optional external providers - configure in Render dashboard:
       # - key: OPENAI_API_KEY
       #   sync: false

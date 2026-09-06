@@ -9,7 +9,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { GlowBadge } from '../mystical/GlowBadge';
 
 export const Header: React.FC = () => {
-  const { user, isDemoMode, toggleTier } = useAuth();
+  const { user, isDemoMode, toggleTier, isAdmin, toggleDemoMode } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -29,10 +29,29 @@ export const Header: React.FC = () => {
 
       {/* Right side utilities */}
       <div className="flex items-center gap-3">
-        {isDemoMode && (
-          <GlowBadge variant="purple" className="hidden md:inline-flex text-[11px]">
-            {t.common.demoModeBadge}
-          </GlowBadge>
+        {/* Live / Demo Mode Badge */}
+        {isDemoMode ? (
+          <button
+            onClick={isAdmin ? toggleDemoMode : undefined}
+            className={`hidden md:inline-flex items-center gap-1.5 rounded-full border border-purple-500/40 bg-purple-500/15 px-3 py-1 text-[11px] font-medium text-purple-300 shadow-sm transition-all ${
+              isAdmin ? 'hover:bg-purple-500/25 cursor-pointer' : 'cursor-default'
+            }`}
+            title={isAdmin ? "Kattints az Éles Módra váltáshoz" : undefined}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+            <span>{t.common.demoModeBadge}</span>
+          </button>
+        ) : (
+          <button
+            onClick={isAdmin ? toggleDemoMode : undefined}
+            className={`hidden md:inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold text-emerald-300 shadow-[0_0_12px_-3px_rgba(52,211,153,0.3)] transition-all ${
+              isAdmin ? 'hover:bg-emerald-500/25 cursor-pointer' : 'cursor-default'
+            }`}
+            title={isAdmin ? "Éles Mód aktív. Kattints a Demo Módra váltáshoz" : "Éles Produkciós Mód"}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Éles Mód (Live)</span>
+          </button>
         )}
 
         {/* Quick Tier Switcher to easily test Free vs Premium */}

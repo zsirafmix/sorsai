@@ -82,7 +82,8 @@ export default function TarotPage() {
           spreadType,
           question,
           drawnCards,
-          language
+          language,
+          provider: typeof window !== 'undefined' ? (localStorage.getItem('sorsai_ai_provider') || undefined) : undefined
         })
       });
       const data = await res.json();

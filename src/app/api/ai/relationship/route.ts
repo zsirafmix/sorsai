@@ -6,7 +6,9 @@ import { getZodiacSign } from '@/lib/astrology';
 
 export async function POST(req: NextRequest) {
   try {
-    const { userProfile, partner, language = 'hu' } = await req.json();
+    const body = await req.json();
+    const { userProfile, partner, language = 'hu', provider: preferredProvider } = body;
+    const resolvedProvider = preferredProvider || req.headers.get('x-sorsai-provider') || undefined;
 
     const persona = PERSONAS.luna;
     const systemPrompt = getRelationshipReaderPrompt(persona.systemDirective, language);
@@ -36,7 +38,7 @@ Elemezd a kapcsolat dinamikáját a szórakoztató harmónia százalékokkal, er
 
     const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
       return provider.generateStructured(promptPayload, RelationshipAnalysisSchema, systemPrompt);
-    });
+    }, resolvedProvider);
 
     return NextResponse.json({
       analysis: result,

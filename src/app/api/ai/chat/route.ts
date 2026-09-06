@@ -13,8 +13,10 @@ export async function POST(req: NextRequest) {
       persona = 'luna',
       mode = 'quick',
       userProfile,
-      language = 'hu'
+      language = 'hu',
+      provider: preferredProvider
     } = body;
+    const resolvedProvider = preferredProvider || req.headers.get('x-sorsai-provider') || undefined;
 
     const selectedPersona = PERSONAS[persona as PersonaId] || PERSONAS.luna;
 
@@ -56,7 +58,7 @@ Kérlek, végezd el a teljes integrált szintézist a megadott JSON sémának me
 
       const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
         return provider.generateStructured(promptPayload, SynthesisOutputSchema, systemPrompt);
-      });
+      }, resolvedProvider);
 
       return NextResponse.json({
         type: 'synthesis',
@@ -79,7 +81,7 @@ Kérlek, végezd el a teljes integrált szintézist a megadott JSON sémának me
 
     const { result, isDemoFallback } = await executeAIWithFallback(async (provider) => {
       return provider.generateText(message, systemPrompt);
-    });
+    }, resolvedProvider);
 
     return NextResponse.json({
       type: 'text',

@@ -33,7 +33,7 @@ import { useTranslation } from '@/lib/i18n';
 type TabKey = 'overview' | 'users' | 'system' | 'logs';
 
 export default function AdminPage() {
-  const { user, isAdmin, verifyAdminPasscode, revokeAdmin } = useAuth();
+  const { user, isAdmin, isDemoMode, setDemoMode, verifyAdminPasscode, revokeAdmin } = useAuth();
   const { t } = useTranslation();
 
   // Gatekeeper state
@@ -331,11 +331,23 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-medium">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              Rendszer él: Normál működés
-            </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Live / Demo Mode Switcher Pill */}
+            <button
+              onClick={() => {
+                setDemoMode(!isDemoMode);
+                showNotice(isDemoMode ? "✨ Átkapcsolva ÉLES MÓDBA (Live)!" : "Átkapcsolva Demo Módba.");
+              }}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+                !isDemoMode
+                  ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_-3px_rgba(52,211,153,0.3)] hover:bg-emerald-500/25'
+                  : 'border-purple-500/40 bg-purple-500/15 text-purple-300 hover:bg-purple-500/25'
+              }`}
+              title="Kattints az Éles / Demo mód közötti azonnali váltáshoz"
+            >
+              <span className={`h-2 w-2 rounded-full ${!isDemoMode ? 'bg-emerald-400 animate-pulse' : 'bg-purple-400'}`} />
+              <span>{!isDemoMode ? 'Éles Mód (Live)' : 'Demo Mód (Szimulált)'}</span>
+            </button>
 
             <button
               onClick={() => {
@@ -415,6 +427,63 @@ export default function AdminPage() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
+            {/* Live vs Demo Mode Control Banner */}
+            <div className={`rounded-2xl border p-5 sm:p-6 backdrop-blur-xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+              !isDemoMode
+                ? 'border-emerald-500/40 bg-emerald-950/20 shadow-[0_0_25px_-5px_rgba(52,211,153,0.2)]'
+                : 'border-purple-500/40 bg-purple-950/20 shadow-purple-glow'
+            }`}>
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <span className={`h-3 w-3 rounded-full ${!isDemoMode ? 'bg-emerald-400 animate-pulse' : 'bg-purple-400'}`} />
+                  <h3 className="text-base font-bold text-white">
+                    Rendszer Állapot: {!isDemoMode ? 'ÉLES MÓD (PRODUCTION / LIVE)' : 'DEMO MÓD (SZIMULÁLT)'}
+                  </h3>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                    !isDemoMode
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                  }`}>
+                    {!isDemoMode ? 'Éles' : 'Demo'}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-xs text-ethereal-300 max-w-2xl">
+                  {!isDemoMode
+                    ? "Az alkalmazás éles produkciós módban üzemel. A beállított AI szolgáltatók, felhasználói adatok és rendszerszolgáltatások valós környezetben működnek."
+                    : "Az alkalmazás szimulált bemutató módban fut. Az AI szintézisek a beépített offline motoron alapulnak."}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => {
+                    setDemoMode(false);
+                    showNotice("✨ Sikeresen átkapcsolva ÉLES MÓDBA!");
+                  }}
+                  className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+                    !isDemoMode
+                      ? 'bg-emerald-500 text-space-950 shadow-[0_0_15px_-2px_rgba(52,211,153,0.5)]'
+                      : 'border border-white/10 bg-white/5 text-ethereal-300 hover:bg-white/10'
+                  }`}
+                >
+                  Éles Mód (Live)
+                </button>
+                <button
+                  onClick={() => {
+                    setDemoMode(true);
+                    showNotice("Átkapcsolva Demo Módba.");
+                  }}
+                  className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+                    isDemoMode
+                      ? 'bg-purple-600 text-white shadow-purple-glow'
+                      : 'border border-white/10 bg-white/5 text-ethereal-300 hover:bg-white/10'
+                  }`}
+                >
+                  Demo Mód
+                </button>
+              </div>
+            </div>
+
             {/* Metric KPI cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-2xl border border-white/10 bg-space-900/60 p-5 backdrop-blur-xl">
