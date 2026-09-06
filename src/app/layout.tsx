@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Starfield } from "@/components/mystical/Starfield";
+import { SacredGeometryOverlay } from "@/components/mystical/SacredGeometryOverlay";
 import { I18nProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/storage/authContext";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
         <I18nProvider>
           <AuthProvider>
             <Starfield />
+            <SacredGeometryOverlay />
             <div className="relative z-10 flex min-h-screen flex-col">
               {children}
             </div>

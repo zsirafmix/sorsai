@@ -13,19 +13,27 @@ export const Header: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-white/10 bg-space-950/80 px-4 sm:px-6 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-gold-500/20 bg-gradient-to-r from-space-950/95 via-mystic-950/70 to-space-950/95 px-4 sm:px-6 backdrop-blur-2xl shadow-[0_10px_25px_-15px_rgba(0,0,0,0.7)]">
       {/* Brand logo (visible on mobile / tablet or as breadcrumb) */}
       <Link href="/dashboard" className="flex items-center gap-2.5 group">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-gold-500/40 bg-gradient-to-tr from-space-900 to-mystic-900 shadow-gold-glow group-hover:scale-105 transition-transform">
-          <Sparkles className="h-5 w-5 text-gold-400" />
+        <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-gold-500/50 bg-gradient-to-tr from-space-900 to-mystic-900 shadow-gold-glow group-hover:scale-105 transition-transform">
+          <Sparkles className="h-5 w-5 text-gold-400 animate-pulse-slow" />
         </div>
         <div>
-          <span className="text-lg font-bold tracking-wider text-white">Sors<span className="text-gold-400">AI</span></span>
-          <span className="hidden lg:inline-block ml-2 text-[10px] uppercase tracking-widest text-gold-400/70 font-medium">
-            Cosmic Oracle
+          <span className="text-lg font-black font-serif tracking-widest text-white">SORS<span className="gold-text-gradient">AI</span></span>
+          <span className="hidden lg:inline-block ml-2 text-[9px] uppercase tracking-[0.2em] text-gold-400/80 font-medium">
+            ✦ SACRED ORACLE ✦
           </span>
         </div>
       </Link>
+
+      {/* Center: Cosmic Celestial Weather Indicator */}
+      <div className="hidden xl:flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-gold-500/25 bg-space-900/60 text-xs text-gold-300 shadow-sm backdrop-blur-md">
+        <span className="text-sm">🌔</span>
+        <span className="font-serif tracking-wide text-[11px] text-white">Növekvő Hold</span>
+        <span className="text-gold-500/40 text-[10px]">✦</span>
+        <span className="font-serif tracking-wide text-[11px] text-gold-300">♍ Szűz Csillagzat</span>
+      </div>
 
       {/* Right side utilities */}
       <div className="flex items-center gap-3">

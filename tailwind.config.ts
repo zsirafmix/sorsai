@@ -42,26 +42,44 @@ const config: Config = {
           500: "#64748b",
         }
       },
+      fontFamily: {
+        serif: ["var(--font-cinzel)", "Cinzel", "Cinzel Decorative", "Georgia", "serif"],
+        cinzel: ["var(--font-cinzel)", "Cinzel", "serif"],
+        cormorant: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],
+      },
       backgroundImage: {
-        'cosmic-gradient': 'radial-gradient(ellipse at 50% 0%, rgba(68, 29, 128, 0.25) 0%, rgba(6, 8, 17, 0.95) 75%)',
-        'gold-glow': 'radial-gradient(circle at center, rgba(212, 175, 55, 0.15) 0%, transparent 70%)',
-        'card-gradient': 'linear-gradient(145deg, rgba(26, 34, 63, 0.6) 0%, rgba(18, 24, 46, 0.4) 100%)',
-        'card-hover': 'linear-gradient(145deg, rgba(42, 21, 82, 0.7) 0%, rgba(20, 26, 51, 0.6) 100%)',
+        'cosmic-gradient': 'radial-gradient(ellipse at 50% 0%, rgba(96, 43, 168, 0.35) 0%, rgba(26, 14, 51, 0.6) 40%, rgba(6, 8, 17, 0.98) 85%)',
+        'gold-glow': 'radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, transparent 70%)',
+        'nebula-radial': 'radial-gradient(ellipse at 50% 40%, rgba(131, 66, 214, 0.3) 0%, rgba(30, 27, 75, 0.45) 45%, rgba(6, 8, 17, 0.98) 80%)',
+        'sacred-altar': 'radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.15) 0%, rgba(26, 14, 51, 0.85) 50%, rgba(6, 8, 17, 0.98) 100%)',
+        'card-gradient': 'linear-gradient(145deg, rgba(26, 14, 51, 0.75) 0%, rgba(11, 15, 31, 0.85) 100%)',
+        'card-hover': 'linear-gradient(145deg, rgba(42, 21, 82, 0.9) 0%, rgba(20, 26, 51, 0.85) 100%)',
+        'gold-shimmer': 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.25), transparent)',
+        'filigree-border': 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent)',
       },
       boxShadow: {
-        'mystic-glow': '0 0 25px -5px rgba(131, 66, 214, 0.35)',
-        'gold-glow': '0 0 25px -5px rgba(212, 175, 55, 0.35)',
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'mystic-glow': '0 0 35px -5px rgba(131, 66, 214, 0.45)',
+        'gold-glow': '0 0 30px -5px rgba(212, 175, 55, 0.45)',
+        'cosmic-ring': '0 0 50px 0 rgba(168, 108, 240, 0.2), inset 0 0 25px 0 rgba(212, 175, 55, 0.15)',
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.08)',
+        'altar': '0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px -5px rgba(212, 175, 55, 0.25)',
       },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 6s ease-in-out infinite',
-        'shimmer': 'shimmer 2.5s linear infinite',
+        'float-slow': 'float 9s ease-in-out infinite',
+        'shimmer': 'shimmer 3s linear infinite',
+        'spin-slow': 'spin 90s linear infinite',
+        'spin-reverse-slow': 'spin-reverse 75s linear infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
+        },
+        'spin-reverse': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(-360deg)' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },

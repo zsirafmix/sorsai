@@ -5,14 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Send,
   Sparkles,
-  Bot,
-  User,
   BookOpen,
   Check,
   Compass,
   Binary,
   Layers,
-  HelpCircle
+  HelpCircle,
+  Sun
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { PERSONAS, PersonaId } from '@/prompts';
@@ -53,7 +52,7 @@ export default function ChatPage() {
       const initial: ChatMessageItem = {
         id: "msg_welcome",
         role: "assistant",
-        content: `Üdvözöllek, ${user?.displayName || "Fénykereső"}! Én Luna vagyok, a személyes intuitív kísérőd. Kérdezz bátran bármilyen életterületről, vagy válaszd a ✨ Teljes Sorszintézist a Tarot, a numerológia és a csillagok együttes bölcsességéért.`,
+        content: `Üdvözöllek a szentélyben, ${user?.displayName || "Fénykereső"}! Én Luna vagyok, a személyes intuitív kísérőd. Kérdezz bátran bármilyen életterületről, vagy válaszd a ✨ Teljes Sorszintézist a Tarot, a numerológia és a csillagok együttes bölcsességéért.`,
         mode: "quick",
         persona: "luna",
         createdAt: new Date().toISOString()
@@ -125,7 +124,7 @@ export default function ChatPage() {
       const errorMsg: ChatMessageItem = {
         id: `err_${Date.now()}`,
         role: 'assistant',
-        content: `Elnézést, pillanatnyilag kapcsolódási nehézség merült fel. Kérlek, próbáld újra egy pillanat múlva.`,
+        content: `Elnézést, pillanatnyilag kozmikus interferencia merült fel. Kérlek, próbáld újra egy pillanat múlva.`,
         mode,
         persona,
         createdAt: new Date().toISOString()
@@ -139,7 +138,7 @@ export default function ChatPage() {
   const saveToJournal = (msg: ChatMessageItem) => {
     demoStore.addJournalEntry({
       type: 'ai_analysis',
-      title: `AI Elemzés: ${msg.content.slice(0, 40)}...`,
+      title: `AI Orákulum: ${msg.content.slice(0, 40)}...`,
       text: msg.structured ? JSON.stringify(msg.structured, null, 2) : msg.content,
       tags: ['ai_elemzés', msg.persona, msg.mode],
       mood: 'Reflektív'
@@ -151,21 +150,26 @@ export default function ChatPage() {
     <AppShell>
       <div className="flex flex-col h-[calc(100vh-140px)] max-w-5xl mx-auto">
         {/* Header: Persona & Mode selection */}
-        <div className="rounded-2xl border border-white/10 bg-card-gradient p-4 backdrop-blur-xl mb-4 shrink-0 shadow-glass">
+        <div className="relative rounded-3xl mystic-card p-4 backdrop-blur-2xl mb-4 shrink-0 shadow-[0_0_30px_rgba(212,175,55,0.12)]">
+          <div className="mystic-corner-tl" />
+          <div className="mystic-corner-br" />
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Personas */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
-              <span className="text-xs font-semibold text-ethereal-400 mr-1 hidden sm:inline">Kísérő:</span>
+              <span className="font-serif text-xs font-bold text-gold-300 uppercase tracking-wider mr-1 hidden sm:inline">
+                ✦ Kísérő:
+              </span>
               {Object.values(PERSONAS).map((p) => {
                 const isSelected = persona === p.id;
                 return (
                   <button
                     key={p.id}
                     onClick={() => setPersona(p.id)}
-                    className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all shrink-0 ${
+                    className={`flex items-center gap-2 rounded-2xl border px-3.5 py-1.5 text-xs font-serif font-semibold transition-all shrink-0 ${
                       isSelected
-                        ? 'border-gold-500/50 bg-gold-500/20 text-gold-200 shadow-gold-glow'
-                        : 'border-white/5 bg-space-900/60 text-ethereal-400 hover:text-white'
+                        ? 'border-gold-500/70 bg-gold-500/25 text-gold-200 shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                        : 'border-gold-500/15 bg-space-950/70 text-ethereal-400 hover:text-white hover:border-gold-500/30'
                     }`}
                     title={p.title_hu}
                   >
@@ -178,7 +182,9 @@ export default function ChatPage() {
 
             {/* Analysis Mode */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
-              <span className="text-xs font-semibold text-ethereal-400 mr-1 hidden sm:inline">Fókusz:</span>
+              <span className="font-serif text-xs font-bold text-gold-300 uppercase tracking-wider mr-1 hidden sm:inline">
+                Fókusz:
+              </span>
               {[
                 { id: 'synthesis', label: '✨ Sorszintézis' },
                 { id: 'quick', label: 'Gyors AI' },
@@ -191,10 +197,10 @@ export default function ChatPage() {
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`rounded-xl border px-2.5 py-1 text-xs font-medium transition-all shrink-0 ${
+                    className={`rounded-2xl border px-3 py-1 text-xs font-serif font-medium transition-all shrink-0 ${
                       isSelected
-                        ? 'border-mystic-400/50 bg-mystic-500/20 text-mystic-200 shadow-mystic-glow'
-                        : 'border-white/5 bg-space-900/60 text-ethereal-400 hover:text-white'
+                        ? 'border-mystic-400/60 bg-mystic-500/25 text-mystic-200 shadow-mystic-glow'
+                        : 'border-gold-500/15 bg-space-950/70 text-ethereal-400 hover:text-white'
                     }`}
                   >
                     {m.label}
@@ -219,25 +225,29 @@ export default function ChatPage() {
                 className={`flex gap-3.5 ${isAssistant ? 'justify-start' : 'justify-end'}`}
               >
                 {isAssistant && (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-gold-500/30 bg-space-900 text-base shadow-gold-glow shrink-0">
+                  <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-gold-500/40 bg-[#120a24] text-base shadow-[0_0_15px_rgba(212,175,55,0.25)] shrink-0">
                     {activePersona.avatar}
+                    <div className="absolute inset-0 rounded-2xl border border-gold-400/20 animate-pulse pointer-events-none" />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-2xl rounded-2xl p-5 backdrop-blur-xl ${
+                  className={`max-w-2xl rounded-3xl p-6 backdrop-blur-2xl ${
                     isAssistant
-                      ? 'border border-white/10 bg-card-gradient text-white shadow-glass'
-                      : 'border border-gold-500/30 bg-gradient-to-r from-gold-500/20 to-amber-500/10 text-white shadow-gold-glow'
+                      ? 'relative mystic-card text-white shadow-[0_0_35px_rgba(212,175,55,0.1)]'
+                      : 'border-2 border-gold-500/40 bg-gradient-to-r from-gold-500/20 via-amber-500/15 to-gold-500/20 text-white shadow-gold-glow'
                   }`}
                 >
+                  {isAssistant && <div className="mystic-corner-tl" />}
+                  {isAssistant && <div className="mystic-corner-br" />}
+
                   {/* Assistant name / header */}
                   {isAssistant && (
-                    <div className="flex items-center justify-between border-b border-white/5 pb-2.5 mb-3 text-xs">
-                      <span className="font-bold text-gold-300">
-                        {activePersona.name} ({activePersona.title_hu})
+                    <div className="flex items-center justify-between border-b border-gold-500/20 pb-2.5 mb-4 text-xs">
+                      <span className="font-serif font-bold text-gold-300 tracking-wider">
+                        ✦ {activePersona.name} ({activePersona.title_hu})
                       </span>
-                      <span className="text-[10px] text-ethereal-400 uppercase tracking-widest font-semibold">
+                      <span className="text-[10px] text-ethereal-400 font-serif uppercase tracking-[0.2em]">
                         {msg.mode === 'synthesis' ? '✨ Sorszintézis' : msg.mode}
                       </span>
                     </div>
@@ -248,15 +258,15 @@ export default function ChatPage() {
                     <div className="space-y-4 text-xs sm:text-sm">
                       {/* Title & Summary */}
                       <div>
-                        <h4 className="text-base font-bold text-gold-300">{msg.structured.title}</h4>
-                        <p className="mt-1.5 text-ethereal-200 leading-relaxed font-light">
-                          {msg.structured.summary}
+                        <h4 className="font-serif text-lg font-bold gold-text-gradient">{msg.structured.title}</h4>
+                        <p className="mt-2 text-ethereal-200 leading-relaxed font-light font-serif italic text-sm">
+                          „{msg.structured.summary}”
                         </p>
                       </div>
 
                       {/* Drawn Card if available */}
                       {msg.structured.activeCard && (
-                        <div className="flex flex-col sm:flex-row items-center gap-4 rounded-xl bg-space-950/70 border border-gold-500/20 p-3.5">
+                        <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl bg-space-950/80 border border-gold-500/30 p-4 shadow-sm">
                           <TarotCardView
                             card={msg.structured.activeCard.card}
                             isReversed={msg.structured.activeCard.isReversed}
@@ -264,13 +274,13 @@ export default function ChatPage() {
                             size="sm"
                           />
                           <div className="flex-1 text-left">
-                            <span className="text-[10px] uppercase tracking-wider font-semibold text-gold-400">
-                              Kihúzott Szimbólum
+                            <span className="font-serif text-[10px] uppercase tracking-[0.2em] font-bold text-gold-400">
+                              ✦ Kihúzott Szimbólum
                             </span>
-                            <h5 className="font-bold text-white text-sm">
+                            <h5 className="font-serif font-bold text-white text-base mt-0.5">
                               {msg.structured.activeCard.card.name_hu} ({msg.structured.activeCard.isReversed ? 'Fordított' : 'Álló'})
                             </h5>
-                            <p className="mt-1 text-xs text-ethereal-300">
+                            <p className="mt-1.5 text-xs text-ethereal-300 font-light leading-relaxed">
                               {msg.structured.tarotPerspective}
                             </p>
                           </div>
@@ -278,29 +288,31 @@ export default function ChatPage() {
                       )}
 
                       {/* Three Pillar Cards: Numerology, Astrology, Synthesis */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                        <div className="rounded-xl bg-space-950/50 border border-white/5 p-3">
-                          <span className="font-semibold text-blue-300 flex items-center gap-1 mb-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div className="rounded-2xl bg-space-950/70 border border-blue-500/25 p-3.5">
+                          <span className="font-serif font-semibold text-blue-300 flex items-center gap-1.5 mb-1.5 text-xs">
                             <Binary className="h-3.5 w-3.5" /> Numerológiai Üzenet
                           </span>
-                          <p className="text-ethereal-300 text-xs leading-relaxed">
+                          <p className="text-ethereal-300 text-xs leading-relaxed font-light">
                             {msg.structured.numerologyPerspective}
                           </p>
                         </div>
-                        <div className="rounded-xl bg-space-950/50 border border-white/5 p-3">
-                          <span className="font-semibold text-purple-300 flex items-center gap-1 mb-1">
+                        <div className="rounded-2xl bg-space-950/70 border border-purple-500/25 p-3.5">
+                          <span className="font-serif font-semibold text-purple-300 flex items-center gap-1.5 mb-1.5 text-xs">
                             <Compass className="h-3.5 w-3.5" /> Asztrológiai Nézőpont
                           </span>
-                          <p className="text-ethereal-300 text-xs leading-relaxed">
+                          <p className="text-ethereal-300 text-xs leading-relaxed font-light">
                             {msg.structured.astrologicalAngle}
                           </p>
                         </div>
                       </div>
 
                       {/* Things to notice & next steps */}
-                      <div className="rounded-xl bg-space-950/60 border border-white/5 p-3.5 space-y-2">
-                        <span className="font-semibold text-gold-300 block">Mire érdemes figyelni?</span>
-                        <ul className="list-disc list-inside space-y-1 text-ethereal-300">
+                      <div className="rounded-2xl bg-space-950/70 border border-gold-500/20 p-4 space-y-2">
+                        <span className="font-serif font-bold text-gold-300 text-xs block uppercase tracking-wider">
+                          ✦ Mire Érdemes Figyelni a Mindennapokban?
+                        </span>
+                        <ul className="list-disc list-inside space-y-1.5 text-ethereal-200 text-xs font-light">
                           {msg.structured.thingsToNotice?.map((item: string, idx: number) => (
                             <li key={idx}>{item}</li>
                           ))}
@@ -308,44 +320,44 @@ export default function ChatPage() {
                       </div>
 
                       {/* Reflection question */}
-                      <div className="rounded-xl bg-gold-500/10 border border-gold-500/30 p-3.5">
-                        <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block mb-1">
-                          Reflexiós kérdés
+                      <div className="rounded-2xl bg-gradient-to-r from-gold-500/15 via-amber-500/10 to-transparent border border-gold-500/35 p-4 shadow-sm">
+                        <span className="font-serif text-[10px] uppercase font-bold tracking-[0.2em] text-gold-400 block mb-1">
+                          ✦ Belső Reflexiós Kérdés
                         </span>
-                        <p className="italic text-gold-200 font-medium">
+                        <p className="font-serif italic text-gold-200 font-medium text-sm">
                           „{msg.structured.reflectionQuestions?.[0] || msg.structured.reflectionQuestions}”
                         </p>
                       </div>
 
-                      <div className="text-[10px] text-ethereal-500 italic pt-1">
+                      <div className="text-[10px] text-ethereal-500 italic pt-1 font-serif">
                         {msg.structured.disclaimer}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-xs sm:text-sm text-ethereal-200 leading-relaxed whitespace-pre-line font-light">
+                    <div className="text-xs sm:text-sm text-ethereal-200 leading-relaxed whitespace-pre-line font-serif font-light">
                       {msg.content}
                     </div>
                   )}
 
                   {/* Actions (Save to journal) */}
                   {isAssistant && (
-                    <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-                      <span className="text-[10px] text-ethereal-500">
+                    <div className="mt-4 pt-3 border-t border-gold-500/15 flex items-center justify-between text-xs">
+                      <span className="text-[10px] text-ethereal-500 font-mono">
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                       <button
                         onClick={() => saveToJournal(msg)}
                         disabled={savedStatus[msg.id]}
-                        className="inline-flex items-center gap-1 text-[11px] text-gold-400 hover:text-gold-300 transition-colors"
+                        className="inline-flex items-center gap-1.5 font-serif text-[11px] text-gold-400 hover:text-gold-300 transition-colors"
                       >
                         {savedStatus[msg.id] ? (
                           <>
-                            <Check className="h-3 w-3 text-emerald-400" />
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
                             <span className="text-emerald-400">Mentve a Sorsnaplóba</span>
                           </>
                         ) : (
                           <>
-                            <BookOpen className="h-3 w-3" />
+                            <BookOpen className="h-3.5 w-3.5" />
                             <span>Mentés Sorsnaplóba</span>
                           </>
                         )}
@@ -355,7 +367,7 @@ export default function ChatPage() {
                 </div>
 
                 {!isAssistant && (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-gold-500/40 bg-space-900 text-xs font-bold text-gold-300 shadow-gold-glow shrink-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-gold-500/40 bg-space-900 text-xs font-serif font-bold text-gold-300 shadow-gold-glow shrink-0">
                     {user?.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
@@ -364,7 +376,7 @@ export default function ChatPage() {
           })}
 
           {isLoading && (
-            <div className="rounded-2xl border border-gold-500/20 bg-card-gradient p-4 backdrop-blur-xl shadow-gold-glow max-w-md">
+            <div className="rounded-3xl mystic-card p-5 backdrop-blur-2xl shadow-gold-glow max-w-md">
               <MysticalLoader statusText={loadingStatus} />
             </div>
           )}
@@ -372,15 +384,15 @@ export default function ChatPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Suggested Prompts pills when few messages */}
+        {/* Suggested Prompts pills */}
         {messages.length < 3 && !isLoading && (
           <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2 text-xs">
-            <span className="text-ethereal-400 shrink-0 font-medium">Javaslatok:</span>
+            <span className="font-serif text-gold-400 shrink-0 font-medium">✦ Javaslatok:</span>
             {SAMPLE_QUESTIONS.map((q, i) => (
               <button
                 key={i}
                 onClick={() => handleSend(q)}
-                className="rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-ethereal-300 hover:border-gold-500/40 hover:text-white transition-all whitespace-nowrap"
+                className="rounded-full border border-gold-500/25 bg-space-950/80 px-3.5 py-1.5 font-serif text-xs text-ethereal-300 hover:border-gold-500/50 hover:text-gold-200 transition-all whitespace-nowrap shadow-sm"
               >
                 {q}
               </button>
@@ -389,7 +401,10 @@ export default function ChatPage() {
         )}
 
         {/* Input Bar */}
-        <div className="relative rounded-2xl border border-white/10 bg-card-gradient p-2 backdrop-blur-2xl shadow-glass shrink-0">
+        <div className="relative rounded-3xl mystic-card p-2 backdrop-blur-2xl shadow-[0_0_30px_rgba(212,175,55,0.15)] shrink-0">
+          <div className="mystic-corner-tl" />
+          <div className="mystic-corner-br" />
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -403,12 +418,12 @@ export default function ChatPage() {
               onChange={(e) => setInput(e.target.value)}
               placeholder={t.chat.placeholder}
               disabled={isLoading}
-              className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-ethereal-500 focus:outline-none"
+              className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-ethereal-500 focus:outline-none font-serif"
             />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 text-space-950 font-bold hover:brightness-110 disabled:opacity-40 transition-all shadow-gold-glow shrink-0"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-r from-gold-500 via-amber-400 to-gold-600 text-space-950 font-bold hover:brightness-110 disabled:opacity-40 transition-all shadow-gold-glow shrink-0"
             >
               <Send className="h-4 w-4" />
             </button>
