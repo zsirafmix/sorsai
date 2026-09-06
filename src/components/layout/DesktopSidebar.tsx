@@ -16,7 +16,8 @@ import {
   Crown,
   Settings,
   Brain,
-  SunMedium
+  SunMedium,
+  ShieldAlert
 } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { useAuth } from '@/lib/storage/authContext';
@@ -24,7 +25,7 @@ import { useAuth } from '@/lib/storage/authContext';
 export const DesktopSidebar: React.FC = () => {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   const navigationItems = [
     { href: "/dashboard", label: t.common.dashboard, icon: LayoutDashboard },
@@ -39,6 +40,9 @@ export const DesktopSidebar: React.FC = () => {
     { href: "/sorsprofil", label: t.common.destinyProfile, icon: User },
     { href: "/pricing", label: t.common.pricing, icon: Crown },
     { href: "/settings", label: t.common.settings, icon: Settings },
+    ...(isAdmin ? [
+      { href: "/admin", label: t.common.admin, icon: ShieldAlert, highlight: true, adminBadge: true }
+    ] : [])
   ];
 
   return (
@@ -72,9 +76,11 @@ export const DesktopSidebar: React.FC = () => {
             >
               <Icon className={`h-4 w-4 ${isActive ? 'text-gold-400' : 'text-ethereal-400'}`} />
               <span className="truncate">{item.label}</span>
-              {item.highlight && (
+              {item.adminBadge ? (
+                <span className="ml-auto rounded-full bg-amber-500/20 border border-amber-500/30 px-1.5 py-0.5 text-[10px] text-amber-300 font-semibold">Admin</span>
+              ) : item.highlight ? (
                 <span className="ml-auto rounded-full bg-mystic-500/30 px-1.5 py-0.5 text-[10px] text-mystic-200">AI</span>
-              )}
+              ) : null}
             </Link>
           );
         })}
@@ -92,7 +98,7 @@ export const DesktopSidebar: React.FC = () => {
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-white truncate">{user?.displayName || "Kereső Vándor"}</p>
             <p className="text-[10px] text-gold-400/90 font-medium capitalize">
-              {user?.tier === 'premium' ? "Prémium Beavatott" : "Kereső (Ingyenes)"}
+              {isAdmin ? "👑 Adminisztrátor" : (user?.tier === 'premium' ? "Prémium Beavatott" : "Kereső (Ingyenes)")}
             </p>
           </div>
         </Link>

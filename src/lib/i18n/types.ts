@@ -22,6 +22,7 @@ export interface Translations {
     destinyProfile: string;
     settings: string;
     pricing: string;
+    admin: string;
     saveToJournal: string;
     saved: string;
     share: string;
@@ -41,6 +42,23 @@ export interface Translations {
     ephemerisNote: string;
     disclaimer: string;
     upgradeToPremium: string;
+  };
+  admin: {
+    title: string;
+    subtitle: string;
+    accessDenied: string;
+    passcodePrompt: string;
+    unlock: string;
+    invalidPasscode: string;
+    tabOverview: string;
+    tabUsers: string;
+    tabSystem: string;
+    tabLogs: string;
+    totalUsers: string;
+    totalReadings: string;
+    activeProvider: string;
+    grantPremium: string;
+    revokePremium: string;
   };
   landing: {
     heroTitle: string;

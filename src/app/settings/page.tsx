@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Settings,
@@ -10,7 +11,10 @@ import {
   User,
   Shield,
   Check,
-  AlertTriangle
+  AlertTriangle,
+  ShieldAlert,
+  ShieldCheck,
+  ArrowRight
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { GlowBadge } from '@/components/mystical/GlowBadge';
@@ -19,7 +23,7 @@ import { useTranslation, Language } from '@/lib/i18n';
 import { demoStore } from '@/lib/storage/demoStore';
 
 export default function SettingsPage() {
-  const { user, updateProfile, logout } = useAuth();
+  const { user, isAdmin, updateProfile, logout } = useAuth();
   const { language, setLanguage, t } = useTranslation();
 
   const [displayName, setDisplayName] = useState(user?.displayName || '');
@@ -170,6 +174,52 @@ export default function SettingsPage() {
                 <span>{l.label}</span>
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Admin Access Panel */}
+        <div className={`rounded-3xl border p-6 sm:p-8 backdrop-blur-xl transition-all ${
+          isAdmin
+            ? 'border-amber-500/40 bg-amber-500/5 shadow-gold-glow'
+            : 'border-white/10 bg-card-gradient shadow-glass'
+        }`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border ${
+                isAdmin
+                  ? 'border-amber-500/50 bg-amber-500/15 text-amber-300'
+                  : 'border-white/10 bg-white/5 text-ethereal-300'
+              }`}>
+                {isAdmin ? <ShieldCheck className="h-6 w-6" /> : <ShieldAlert className="h-6 w-6" />}
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>{t.common.admin || "Admin Vezérlőpult"}</span>
+                  {isAdmin && (
+                    <span className="rounded-full bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 text-[10px] text-amber-300 font-semibold">
+                      FŐADMIN
+                    </span>
+                  )}
+                </h3>
+                <p className="text-xs text-ethereal-300 mt-0.5">
+                  {isAdmin
+                    ? "Felhasználók kezelése, előfizetési jogok adása/megvonása, AI modell választás és audit naplók."
+                    : "Rendelkezel rendszeradminisztrátori jelkóddal? Kattints ide a jogok feloldásához."}
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/admin"
+              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all shrink-0 ${
+                isAdmin
+                  ? 'bg-gradient-to-r from-amber-600 to-gold-500 text-space-950 shadow-gold-glow hover:brightness-110'
+                  : 'border border-white/10 bg-white/5 text-white hover:bg-white/10'
+              }`}
+            >
+              <span>{isAdmin ? "Admin Megnyitása" : "Admin Belépés"}</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
 

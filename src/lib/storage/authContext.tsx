@@ -4,24 +4,32 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { UserProfile, demoStore } from './demoStore';
 import { createClient } from '../supabase/client';
 
+export const ADMIN_PASSCODE = process.env.NEXT_PUBLIC_ADMIN_SECRET || "sorsai-admin-2026";
+
 interface AuthContextProps {
   user: UserProfile | null;
   isLoading: boolean;
   isDemoMode: boolean;
+  isAdmin: boolean;
   login: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (profile: Partial<UserProfile>) => void;
   toggleTier: () => void;
+  verifyAdminPasscode: (passcode: string) => boolean;
+  revokeAdmin: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps>({
   user: null,
   isLoading: true,
   isDemoMode: true,
+  isAdmin: false,
   login: async () => {},
   logout: async () => {},
   updateProfile: () => {},
   toggleTier: () => {},
+  verifyAdminPasscode: () => false,
+  revokeAdmin: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -81,16 +89,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     updateProfile({ tier: newTier });
   };
 
+  const verifyAdminPasscode = (passcode: string): boolean => {
+    if (passcode.trim() === ADMIN_PASSCODE) {
+      const updated = demoStore.saveProfile({ role: 'admin' });
+      demoStore.addAuditLog("Admin Jogosultság Feloldása", "Sikeres belépés adminisztrátori jelkóddal");
+      setUser(updated);
+      return true;
+    }
+    demoStore.addAuditLog("Sikertelen Admin Kísérlet", "Helytelen admin jelkód kísérlet");
+    return false;
+  };
+
+  const revokeAdmin = () => {
+    const updated = demoStore.saveProfile({ role: 'user' });
+    demoStore.addAuditLog("Admin Jogok Lemondása", "Adminisztrátori jogosultság visszavonva");
+    setUser(updated);
+  };
+
+  const isAdmin = user?.role === 'admin';
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading,
         isDemoMode,
+        isAdmin,
         login,
         logout,
         updateProfile,
-        toggleTier
+        toggleTier,
+        verifyAdminPasscode,
+        revokeAdmin,
       }}
     >
       {children}
